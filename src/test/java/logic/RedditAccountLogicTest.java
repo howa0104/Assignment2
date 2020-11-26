@@ -331,22 +331,22 @@ class RedditAccountLogicTest {
         assertEquals( sampleMap.get( RedditAccountLogic.NAME )[ 0 ], returnedAccount.getName());
         assertEquals( Integer.parseInt( sampleMap.get( RedditAccountLogic.LINK_POINTS )[ 0 ] ), returnedAccount.getLinkPoints());
         assertEquals( Integer.parseInt( sampleMap.get( RedditAccountLogic.COMMENT_POINTS )[ 0 ] ), returnedAccount.getCommentPoints());
-        assertEquals( sampleMap.get( RedditAccountLogic.CREATED )[ 0 ], returnedAccount.getCreated());
+        assertEquals( sampleMap.get( RedditAccountLogic.CREATED )[ 0 ], logic.convertDateToString(returnedAccount.getCreated()));
 
         sampleMap = new HashMap<>();
         sampleMap.put( AccountLogic.ID, new String[]{ Integer.toString( 1 ) } );
         sampleMap.put( RedditAccountLogic.NAME, new String[]{ generateString.apply( 45 ) } );
         sampleMap.put( RedditAccountLogic.LINK_POINTS, new String[]{ Integer.toString( 45 ) } );
         sampleMap.put( RedditAccountLogic.COMMENT_POINTS, new String[]{ Integer.toString( 45 ) } );
-        sampleMap.put( RedditAccountLogic.CREATED, new String[]{ generateString.apply( 45 ) } );
+        sampleMap.put( RedditAccountLogic.CREATED, new String[]{ logic.convertDateToString(returnedAccount.getCreated()) } );
 
         //idealy every test should be in its own method
         returnedAccount = logic.createEntity( sampleMap );
         assertEquals( Integer.parseInt( sampleMap.get( AccountLogic.ID )[ 0 ] ), returnedAccount.getId() );
         assertEquals( sampleMap.get( RedditAccountLogic.NAME )[ 0 ], returnedAccount.getName());
-        assertEquals( sampleMap.get( RedditAccountLogic.LINK_POINTS )[ 0 ], returnedAccount.getLinkPoints());
-        assertEquals( sampleMap.get( RedditAccountLogic.COMMENT_POINTS )[ 0 ], returnedAccount.getCommentPoints());
-        assertEquals( sampleMap.get( RedditAccountLogic.CREATED )[ 0 ], returnedAccount.getCreated());
+        assertEquals( sampleMap.get( RedditAccountLogic.LINK_POINTS )[ 0 ], String.valueOf(returnedAccount.getLinkPoints()));
+        assertEquals( sampleMap.get( RedditAccountLogic.COMMENT_POINTS )[ 0 ], String.valueOf(returnedAccount.getCommentPoints()));
+        assertEquals( sampleMap.get( RedditAccountLogic.CREATED )[ 0 ], logic.convertDateToString(returnedAccount.getCreated()));
     }
 
     @Test
