@@ -21,7 +21,7 @@ import logic.RedditAccountLogic;
  *
  * @author Shariar (Shawn) Emami
  */
-@WebServlet( name = "RedditAccountTableJSP", urlPatterns = { "/RedditAccountTableJSPExample" } )
+@WebServlet( name = "RedditAccountTableJSP", urlPatterns = { "/RedditAccountTableJSP" } )
 public class RedditAccountTableViewFSP extends HttpServlet {
 
     private void fillTableData( HttpServletRequest req, HttpServletResponse resp )

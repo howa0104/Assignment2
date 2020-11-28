@@ -57,7 +57,7 @@ public class RedditAccountTableView extends HttpServlet {
             for( RedditAccount e: entities ) {
                 //for other tables replace the code bellow with
                 //extractDataAsList in a loop to fill the data.
-                out.printf( "<tr><td>%s</td><td>%d</td><td>%d</td><td>%d</td><td>%t</td></tr>",
+                out.printf( "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>",
                         logic.extractDataAsList( e ).toArray() );
             }
 

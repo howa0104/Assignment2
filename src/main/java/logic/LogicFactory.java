@@ -26,7 +26,7 @@ public abstract class LogicFactory {
     public static < T> T getFor(Class<T> type) {
 
         try {
-            Constructor<T> declaredConstructor = type.getDeclaredConstructor(/*not sure*/);
+            Constructor<T> declaredConstructor = type.getDeclaredConstructor();
             return declaredConstructor.newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             throw new IllegalArgumentException(e);

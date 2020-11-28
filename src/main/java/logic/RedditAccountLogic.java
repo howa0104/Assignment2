@@ -9,10 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.ObjIntConsumer;
-import common.ComponentExamples;
-import java.text.SimpleDateFormat;
-import java.time.Clock;
-import java.time.Instant;
 
 
 /**
@@ -117,6 +113,8 @@ public class RedditAccountLogic extends GenericLogic<RedditAccount, RedditAccoun
         int linkPoints = Integer.parseInt(parameterMap.get( LINK_POINTS )[ 0 ]);
         int commentPoints = Integer.parseInt(parameterMap.get( COMMENT_POINTS )[ 0 ]);
         String date = parameterMap.get( CREATED )[ 0 ];
+        //String date = this.convertDateToString(parameterMap.get( CREATED )[ 0 ]);
+        
         
         validator.accept( name, 45 );
 
