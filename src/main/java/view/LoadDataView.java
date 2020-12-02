@@ -35,10 +35,6 @@ import reddit.wrapper.RedditWrapper;
 import reddit.wrapper.SubSort;
 import reddit.wrapper.SubredditWrapper;
 
-/**
- *
- * @author jmlgz
- */
 @WebServlet(name = "LoadDataView", urlPatterns = {"/LoadDataView"})
 public class LoadDataView extends HttpServlet {
 

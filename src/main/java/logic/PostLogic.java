@@ -105,24 +105,25 @@ public class PostLogic extends GenericLogic<Post,PostDAL>{
         //converted to appropriate type. have in mind that values are
         //stored in an array of String; almost always the value is at
         //index zero unless you have used duplicated key/name somewhere.
-        String uniqueid = parameterMap.get( UNIQUE_ID )[ 0 ];
-        String points = parameterMap.get( POINTS )[ 0 ];
-        String commentcount = parameterMap.get( COMMENT_COUNT )[ 0 ];
-        String id = parameterMap.get( ID )[ 0 ];
-        String title = parameterMap.get( TITLE )[ 0 ];
-        String created = parameterMap.get( CREATED )[ 0 ];
+        String uniqueId = parameterMap.get(UNIQUE_ID)[0];
+        String points = parameterMap.get(POINTS)[0];
+        String commentCount = parameterMap.get(COMMENT_COUNT)[0];
+
+        String title = parameterMap.get(TITLE)[0];
+        String created = parameterMap.get(CREATED)[0];
+
 
         //validate the data
-        validator.accept( uniqueid, 10 );
+        validator.accept( uniqueId, 10 );
         validator.accept( title, 255 );
 
         //set values on entity
-        entity.setUniqueId( uniqueid );
-        entity.setPoints( Integer.parseInt(points) );
-        entity.setCommentCount( Integer.parseInt(commentcount) );
-        entity.setId( Integer.parseInt(id) );
-        entity.setTitle( title );
-        entity.setCreated( convertStringToDate(created) );
+        entity.setUniqueId(uniqueId);
+        entity.setPoints(Integer.valueOf(points));
+        entity.setCommentCount(Integer.valueOf(commentCount));
+        entity.setTitle(title);                
+        entity.setCreated(convertStringToDate(created));
+
 
         return entity;
     }
@@ -137,7 +138,7 @@ public class PostLogic extends GenericLogic<Post,PostDAL>{
      */
     @Override
     public List<String> getColumnNames() {
-        return Arrays.asList( "ID", "UniqueID", "Points", "CommentCount", "Title", "Created" );
+        return Arrays.asList("ID","Reddit_Account_ID","Subreddit_ID","Unique_ID","Points","Comment_Count","Title","Created");
     }
 
     /**
@@ -150,7 +151,7 @@ public class PostLogic extends GenericLogic<Post,PostDAL>{
      */
     @Override
     public List<String> getColumnCodes() {
-        return Arrays.asList( ID, UNIQUE_ID, POINTS, COMMENT_COUNT, TITLE, CREATED );
+        return Arrays.asList(ID,REDDIT_ACCOUNT_ID,SUBREDDIT_ID,UNIQUE_ID,POINTS,COMMENT_COUNT,TITLE,CREATED);
     }
 
     /**
@@ -164,7 +165,7 @@ public class PostLogic extends GenericLogic<Post,PostDAL>{
      */
     @Override
     public List<?> extractDataAsList( Post e ) {
-        return Arrays.asList( e.getId(), e.getUniqueID(), e.getPoints(), e.getCommentCount(),e.getTitle(),e.getCreated() );
+        return Arrays.asList(e.getId(),e.getRedditAccountId(),e.getSubredditId(),e.getUniqueID(),e.getPoints(),e.getCommentCount(),e.getTitle(),e.getCreated());
     }
 }
 

@@ -30,20 +30,11 @@ public class CreateComment extends HttpServlet {
 
     private String errorMessage = null;
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     *
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void processRequest( HttpServletRequest request, HttpServletResponse response )
             throws ServletException, IOException {
         response.setContentType( "text/html;charset=UTF-8" );
         try( PrintWriter out = response.getWriter() ) {
-            /* TODO output your page here. You may use following sample code. */
+            
             out.println( "<!DOCTYPE html>" );
             out.println( "<html>" );
             out.println( "<head>" );
@@ -117,18 +108,6 @@ public class CreateComment extends HttpServlet {
         return builder.toString();
     }
 
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * get method is called first when requesting a URL. since this servlet will create a host this method simple
-     * delivers the html code. creation will be done in doPost method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     *
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet( HttpServletRequest request, HttpServletResponse response )
             throws ServletException, IOException {
@@ -138,17 +117,6 @@ public class CreateComment extends HttpServlet {
 
     static int connectionCount = 0;
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * this method will handle the creation of entity. as it is called by user submitting data through browser.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     *
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost( HttpServletRequest request, HttpServletResponse response )
             throws ServletException, IOException {
@@ -175,7 +143,7 @@ public class CreateComment extends HttpServlet {
                 
                 if(redditAccounts.get(i).getId()==Integer.valueOf(redditAccountId)){
                     redditAccountExists = true;        
-                    i=redditAccounts.size();
+                    i = redditAccounts.size();
                 }
             }
         }
@@ -207,19 +175,11 @@ public class CreateComment extends HttpServlet {
         }
         
         if( request.getParameter( "add" ) != null ){
-            //if add button is pressed return the same page
             processRequest( request, response );
         } else if( request.getParameter( "view" ) != null ){
-            //if view button is pressed redirect to the appropriate table
             response.sendRedirect( "CommentTable" );
         }
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
         return "Create a Comment Entity";

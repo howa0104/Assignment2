@@ -20,13 +20,6 @@ import java.util.function.ObjIntConsumer;
  */
 public class CommentLogic extends GenericLogic<Comment, CommentDAL> {
 
-    /**
-     * create static final variables with proper name of each column. this way you will never manually type it again,
-     * instead always refer to these variables.
-     *
-     * by using the same name as column id and HTML element names we can make our code simpler. this is not recommended
-     * for proper production project.
-     */
     public static final String REPLYS = "replys";
     public static final String IS_REPLY = "is_reply";
     public static final String POINTS = "points";
@@ -75,20 +68,11 @@ public class CommentLogic extends GenericLogic<Comment, CommentDAL> {
 
     @Override
     public Comment createEntity( Map<String, String[]> parameterMap ) {
-        //do not create any logic classes in this method.
 
         Objects.requireNonNull( parameterMap, "parameterMap cannot be null" );
-        //same as if condition below
-//        if (parameterMap == null) {
-//            throw new NullPointerException("parameterMap cannot be null");
-//        }
 
-        //create a new Entity object
         Comment entity = new Comment();
 
-        //ID is generated, so if it exists add it to the entity object
-        //otherwise it does not matter as mysql will create an if for it.
-        //the only time that we will have id is for update behaviour.
         if( parameterMap.containsKey( ID ) ){
             try {
                 entity.setId( Integer.parseInt( parameterMap.get( ID )[ 0 ] ) );
@@ -112,12 +96,7 @@ public class CommentLogic extends GenericLogic<Comment, CommentDAL> {
                 throw new ValidationException( error );
             }
         };
-        //extract the date from map first.
-        //everything in the parameterMap is string so it must first be
-        //converted to appropriate type. have in mind that values are
-        //stored in an array of String; almost always the value is at
-        //index zero unless you have used duplicated key/name somewhere.
-        //String name, int linkPoints, int commentPoints, Date created
+   
         String text = parameterMap.get( TEXT )[ 0 ];
         String date = parameterMap.get( CREATED )[ 0 ];
         String points = parameterMap.get( POINTS )[ 0 ];
@@ -143,43 +122,17 @@ public class CommentLogic extends GenericLogic<Comment, CommentDAL> {
 
         return entity;
     }
-
-    /**
-     * this method is used to send a list of all names to be used form table column headers. by having all names in one
-     * location there is less chance of mistakes.
-     *
-     * this list must be in the same order as getColumnCodes and extractDataAsList
-     *
-     * @return list of all column names to be displayed.
-     */
-    
+  
     @Override
     public List<String> getColumnNames() {
         return Arrays.asList( "ID", "Reddit_Account_ID","Post_ID","Unique_ID", "Text", "Created", "Points", "Replys", "IsReply" );
     }
 
-    /**
-     * this method returns a list of column names that match the official column names in the db. by having all names in
-     * one location there is less chance of mistakes.
-     *
-     * this list must be in the same order as getColumnNames and extractDataAsList
-     *
-     * @return list of all column names in DB.
-     */
     @Override
     public List<String> getColumnCodes() {
         return Arrays.asList( ID, REDDIT_ACCOUNT_ID, POST_ID, UNIQUE_ID, TEXT, CREATED, POINTS, REPLYS, IS_REPLY );
     }
 
-    /**
-     * return the list of values of all columns (variables) in given entity.
-     *
-     * this list must be in the same order as getColumnNames and getColumnCodes
-     *
-     * @param e - given Entity to extract data from.
-     *
-     * @return list of extracted values
-     */
     @Override
     public List<?> extractDataAsList( Comment e ) {
         return Arrays.asList( e.getId(), e.getRedditAccountId(), e.getPostId(), e.getUniqueId(), e.getText(), e.getCreated(), e.getPoints(), e.getReplys(), e.getIsReply());
