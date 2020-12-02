@@ -19,13 +19,13 @@ import java.util.function.ObjIntConsumer;
  * @author raylyn
  */
 public class SubredditLogic extends GenericLogic<Subreddit, SubredditDAL> {
-
-    public static final String SUBCRIBERS = "subscribers";
+// class SubredditLogic extends GenericLogic<Subreddit, SubredditDAL> {
+    public static final String SUBSCRIBERS = "subscribers";
     public static final String NAME = "name";
     public static final String URL = "url";
     public static final String ID = "id";
 
-    public SubredditLogic() {
+    SubredditLogic() {
         super(new SubredditDAL());
     }
 
@@ -60,7 +60,7 @@ public class SubredditLogic extends GenericLogic<Subreddit, SubredditDAL> {
 
     @Override
     public List<String> getColumnCodes() {
-        return Arrays.asList(ID, NAME, SUBCRIBERS, URL);
+        return Arrays.asList(ID, NAME, SUBSCRIBERS, URL);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class SubredditLogic extends GenericLogic<Subreddit, SubredditDAL> {
         //stored in an array of String; almost always the value is at
         //index zero unless you have used duplicated key/name somewhere.
 //        String subscribers = parameterMap.get( SUBCRIBERS )[ 0 ];
-        int subscribers = Integer.parseInt(parameterMap.get(SUBCRIBERS)[0]);
+        int subscribers = Integer.parseInt(parameterMap.get(SUBSCRIBERS)[0]);
         String name = parameterMap.get(NAME)[0];
         String url = parameterMap.get(URL)[0];
 

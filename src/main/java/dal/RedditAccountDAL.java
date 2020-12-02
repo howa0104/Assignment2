@@ -43,13 +43,13 @@ public class RedditAccountDAL extends GenericDAL<RedditAccount> {
     public List<RedditAccount> findByCommentPoints( int commentPoints ) {
         Map<String, Object> map = new HashMap<>();
         map.put( "commentPoints", commentPoints );
-        return findResults( "RedditAccount.findByLinkPoints", map );
+        return findResults( "RedditAccount.findByCommentPoints", map );
     }
     
     public List<RedditAccount> findByCreated( Date created ) {
         Map<String, Object> map = new HashMap<>();
         map.put( "created", created );
-        return findResults( "RedditAccount.findByLinkPoints", map );
+        return findResults( "RedditAccount.findByCreated", map );
     }
     
 }

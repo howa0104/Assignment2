@@ -19,7 +19,7 @@ import logic.SubredditLogic;
  *
  * @author raylyn
  */
-@WebServlet(name = "SubredditTableView", urlPatterns = {"/SubredditTableView"})
+@WebServlet(name = "SubredditTableView", urlPatterns = {"/SubredditTable"})
 public class SubredditTableView extends HttpServlet {
 
     /**

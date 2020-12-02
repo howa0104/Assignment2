@@ -55,7 +55,7 @@ public class CreateSubreddit extends HttpServlet {
             out.println("<form method=\"post\">");
             // printout names of coloumnns for table 
             out.println("Subscribers:<br>");
-            out.printf("<input type=\"text\" name=\"%s\" value=\"\"><br>", SubredditLogic.SUBCRIBERS);
+            out.printf("<input type=\"text\" name=\"%s\" value=\"\"><br>", SubredditLogic.SUBSCRIBERS);
             out.println("<br>");
             out.println("Name:<br>");
             out.printf("<input type=\"text\" name=\"%s\" value=\"\"><br>", SubredditLogic.NAME);

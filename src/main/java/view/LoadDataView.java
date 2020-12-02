@@ -58,7 +58,7 @@ public class LoadDataView extends HttpServlet {
             out.println("<div style=\"text-align: center;\">");
             out.println("<div style=\"display: inline-block; text-align: left;\">");
 
-            out.println("Subreddit NAME:");
+            out.println("Subreddit Name:");
             out.printf("<input type=\"text\" name=\"%s\" value=\"\"><br>", SubredditLogic.NAME);
             out.println("<br>");
 
@@ -231,7 +231,7 @@ public class LoadDataView extends HttpServlet {
 
     @Override
     public String getServletInfo() {
-        return "Load Real Data";
+        return "Load Data";
     }
 
 }

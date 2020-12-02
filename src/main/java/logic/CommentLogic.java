@@ -1,8 +1,11 @@
 package logic;
 
 import common.ValidationException;
+import dal.CommentDAL;
 import dal.RedditAccountDAL;
+import entity.Comment;
 import entity.RedditAccount;
+import static java.lang.Boolean.parseBoolean;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -15,7 +18,7 @@ import java.util.function.ObjIntConsumer;
  *
  * @author Shariar (Shawn) Emami
  */
-public class RedditAccountLogic extends GenericLogic<RedditAccount, RedditAccountDAL> {
+public class CommentLogic extends GenericLogic<Comment, CommentDAL> {
 
     /**
      * create static final variables with proper name of each column. this way you will never manually type it again,
@@ -24,47 +27,54 @@ public class RedditAccountLogic extends GenericLogic<RedditAccount, RedditAccoun
      * by using the same name as column id and HTML element names we can make our code simpler. this is not recommended
      * for proper production project.
      */
-    public static final String COMMENT_POINTS = "comment_points";
-    public static final String LINK_POINTS = "link_points";
+    public static final String REPLYS = "replys";
+    public static final String IS_REPLY = "is_reply";
+    public static final String POINTS = "points";
     public static final String CREATED = "created";
-    public static final String NAME = "name";
+    public static final String TEXT = "text";
     public static final String ID = "id";
+    public static final String UNIQUE_ID = "unique_id";
+    public static final String REDDIT_ACCOUNT_ID = "reddit_account_id";
+    public static final String POST_ID = "post_id";
 
-    RedditAccountLogic() {
-        super( new RedditAccountDAL() );
+    CommentLogic() {
+        super( new CommentDAL() );
     }
 
     @Override
-    public List<RedditAccount> getAll() {
+    public List<Comment> getAll() {
         return get( () -> dal().findAll() );
     }
 
     @Override
-    public RedditAccount getWithId( int id ) {
+    public Comment getWithId( int id ) {
         return get( () -> dal().findById( id ) );
     }
 
     
-    public RedditAccount getRedditAccountWithName( String name ) {
-        return get( () -> dal().findByName(name ) );
+    public Comment getCommentWithUniqueId( String uniqueId ) {
+        return get( () -> dal().findByUniqueId(uniqueId ) );
     }
 
-    public List<RedditAccount> getRedditAccountsWithLinkPoints( int linkPoints ) {
-        return get( () -> dal().findByLinkPoints( linkPoints) );
+    public List<Comment> getCommentsWithText( String text ) {
+        return get( () -> dal().findByText(text) );
     }
-
-    public List<RedditAccount> getRedditAccountWithCommentPoints( int commentPoints ) {
-        return get( () -> dal().findByCommentPoints(commentPoints ) );
+    
+    public List<Comment> getCommentsWithPoints( int points ) {
+        return get( () -> dal().findByPoints(points ) );
     }
-
-
-    public List<RedditAccount> getRedditAccountsWithCreated( Date created ) {
-        return get( () -> dal().findByCreated(created ) );
+    
+    public List<Comment> getCommentsWithReplys( int replys ) {
+        return get( () -> dal().findByPoints(replys ) );
     }
-
+    
+    public List<Comment> getCommentsWithIsReplys( boolean isReply ) {
+        return get( () -> dal().findByIsReply(isReply ) );
+    }
+   
 
     @Override
-    public RedditAccount createEntity( Map<String, String[]> parameterMap ) {
+    public Comment createEntity( Map<String, String[]> parameterMap ) {
         //do not create any logic classes in this method.
 
         Objects.requireNonNull( parameterMap, "parameterMap cannot be null" );
@@ -74,7 +84,7 @@ public class RedditAccountLogic extends GenericLogic<RedditAccount, RedditAccoun
 //        }
 
         //create a new Entity object
-        RedditAccount entity = new RedditAccount();
+        Comment entity = new Comment();
 
         //ID is generated, so if it exists add it to the entity object
         //otherwise it does not matter as mysql will create an if for it.
@@ -102,28 +112,34 @@ public class RedditAccountLogic extends GenericLogic<RedditAccount, RedditAccoun
                 throw new ValidationException( error );
             }
         };
-
         //extract the date from map first.
         //everything in the parameterMap is string so it must first be
         //converted to appropriate type. have in mind that values are
         //stored in an array of String; almost always the value is at
         //index zero unless you have used duplicated key/name somewhere.
         //String name, int linkPoints, int commentPoints, Date created
-        String name = parameterMap.get( NAME )[ 0 ];
-        int linkPoints = Integer.parseInt(parameterMap.get( LINK_POINTS )[ 0 ]);
-        int commentPoints = Integer.parseInt(parameterMap.get( COMMENT_POINTS )[ 0 ]);
+        String text = parameterMap.get( TEXT )[ 0 ];
         String date = parameterMap.get( CREATED )[ 0 ];
-        //String date = this.convertDateToString(parameterMap.get( CREATED )[ 0 ]);
+        String points = parameterMap.get( POINTS )[ 0 ];
+        String replys = parameterMap.get( REPLYS )[ 0 ];
+        String uniqueId = parameterMap.get( UNIQUE_ID)[ 0 ];
+        String isReply = parameterMap.get(IS_REPLY)[0];
+        
+        validator.accept(text, 999 );
+        validator.accept(date,50);
+        validator.accept(points,100);
+        validator.accept(replys,100);
+        validator.accept(uniqueId,15);
+        validator.accept(isReply, 1);
         
         
-        validator.accept( name, 45 );
-        validator.accept(date, 45);
-
         //set values on entity
-        entity.setName(name );
-        entity.setLinkPoints(linkPoints );
-        entity.setCommentPoints(commentPoints );
-        entity.setCreated(convertStringToDate(date));
+        entity.setText(text );
+        entity.setCreated(convertStringToDate(date) );
+        entity.setPoints(Integer.valueOf(points) );
+        entity.setReplys(Integer.valueOf(replys));
+        entity.setUniqueId(uniqueId);
+        entity.setIsReply(Integer.valueOf(isReply)!=0);
 
         return entity;
     }
@@ -136,9 +152,10 @@ public class RedditAccountLogic extends GenericLogic<RedditAccount, RedditAccoun
      *
      * @return list of all column names to be displayed.
      */
+    
     @Override
     public List<String> getColumnNames() {
-        return Arrays.asList( "ID", "Name", "LinkPoints", "CommentPoints", "Created" );
+        return Arrays.asList( "ID", "Reddit_Account_ID","Post_ID","Unique_ID", "Text", "Created", "Points", "Replys", "IsReply" );
     }
 
     /**
@@ -151,7 +168,7 @@ public class RedditAccountLogic extends GenericLogic<RedditAccount, RedditAccoun
      */
     @Override
     public List<String> getColumnCodes() {
-        return Arrays.asList( ID, NAME, LINK_POINTS, COMMENT_POINTS, CREATED );
+        return Arrays.asList( ID, REDDIT_ACCOUNT_ID, POST_ID, UNIQUE_ID, TEXT, CREATED, POINTS, REPLYS, IS_REPLY );
     }
 
     /**
@@ -164,7 +181,7 @@ public class RedditAccountLogic extends GenericLogic<RedditAccount, RedditAccoun
      * @return list of extracted values
      */
     @Override
-    public List<?> extractDataAsList( RedditAccount e ) {
-        return Arrays.asList( e.getId(), e.getName(), e.getLinkPoints(), e.getCommentPoints(), e.getCreated());
+    public List<?> extractDataAsList( Comment e ) {
+        return Arrays.asList( e.getId(), e.getRedditAccountId(), e.getPostId(), e.getUniqueId(), e.getText(), e.getCreated(), e.getPoints(), e.getReplys(), e.getIsReply());
     }
 }

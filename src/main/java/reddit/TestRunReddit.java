@@ -28,7 +28,7 @@ public class TestRunReddit {
         String clientSecret = "2sg2p_fpxZCdKP0Xea2eWeJp";
         String redditUser = "howa0104";
         String algonquinUser = "howa0104";
-
+  
         DeveloperAccount dev = new DeveloperAccount()
                 .setClientID( clientID )
                 .setClientSecret( clientSecret )

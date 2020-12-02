@@ -1,9 +1,12 @@
 package view;
 
+import entity.Comment;
+import entity.Post;
 import entity.RedditAccount;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -13,15 +16,17 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import logic.CommentLogic;
 import logic.LogicFactory;
+import logic.PostLogic;
 import logic.RedditAccountLogic;
 
 /**
  *
  * @author Shariar (Shawn) Emami
  */
-@WebServlet( name = "CreateRedditAccount", urlPatterns = { "/CreateRedditAccount" } )
-public class CreateRedditAccount extends HttpServlet {
+@WebServlet( name = "CreateComment", urlPatterns = { "/CreateComment" } )
+public class CreateComment extends HttpServlet {
 
     private String errorMessage = null;
 
@@ -42,27 +47,46 @@ public class CreateRedditAccount extends HttpServlet {
             out.println( "<!DOCTYPE html>" );
             out.println( "<html>" );
             out.println( "<head>" );
-            out.println( "<title>Create Reddit Account</title>" );
+            out.println( "<title>Create Comment</title>" );
             out.println( "</head>" );
             out.println( "<body>" );
             out.println( "<div style=\"text-align: center;\">" );
             out.println( "<div style=\"display: inline-block; text-align: left;\">" );
             out.println( "<form method=\"post\">" );
-            out.println( "RedditName:<br>" );
-            //instead of typing the name of column manualy use the static vraiable in logic
-            //use the same name as column id of the table. will use this name to get date
-            //from parameter map.
-            out.printf( "<input type=\"text\" name=\"%s\" value=\"\"><br>", RedditAccountLogic.NAME );
-            out.println( "<br>" );
-            out.println( "Link Points:<br>" );
-            out.printf( "<input type=\"number\" name=\"%s\" value=\"\"><br>", RedditAccountLogic.LINK_POINTS );
-            out.println( "<br>" );
-            out.println( "Comment Points:<br>" );
-            out.printf( "<input type=\"number\" name=\"%s\" value=\"\"><br>", RedditAccountLogic.COMMENT_POINTS );
-            out.println( "<br>" );
-            out.println( "Created:<br>" );
-            out.printf( "<input type=\"datetime-local\" name=\"%s\" value=\"\"><br>", RedditAccountLogic.CREATED );
-            out.println( "<br>" );
+            
+                out.println( "Reddit Account ID:<br>" );
+                out.printf( "<input type=\"number\" name=\"%s\" value=\"\"><br>", CommentLogic.REDDIT_ACCOUNT_ID );
+                out.println( "<br>" );
+
+                out.println( "Post ID:<br>" );
+                out.printf( "<input type=\"number\" name=\"%s\" value=\"\"><br>", CommentLogic.POST_ID );
+                out.println( "<br>" );
+
+                out.println( "Unique ID:<br>" );
+                out.printf( "<input type=\"text\" name=\"%s\" value=\"\"><br>", CommentLogic.UNIQUE_ID );
+                out.println( "<br>" );
+
+                out.println( "Text:<br>" );
+                out.printf( "<input type=\"text\" name=\"%s\" value=\"\"><br>", CommentLogic.TEXT );
+                out.println( "<br>" );
+
+                out.println( "Created:<br>" );
+                out.printf( "<input type=\"datetime-local\" name=\"%s\" value=\"\"><br>", CommentLogic.CREATED );
+                out.println( "<br>" );
+
+
+                out.println( "Points:<br>" );
+                out.printf( "<input type=\"number\" name=\"%s\" value=\"\"><br>", CommentLogic.POINTS );
+                out.println( "<br>" );
+
+                out.println( "Replys:<br>" );
+                out.printf( "<input type=\"number\" name=\"%s\" value=\"\"><br>", CommentLogic.REPLYS );
+                out.println( "<br>" );
+
+                out.println( "Is Reply:<br>" );
+                out.printf( "<input type=\"number\" name=\"%s\" value=\"\"><br>", CommentLogic.IS_REPLY );
+                out.println( "<br>" );
+            
             out.println( "<input type=\"submit\" name=\"view\" value=\"Add and View\">" );
             out.println( "<input type=\"submit\" name=\"add\" value=\"Add\">" );
             out.println( "</form>" );
@@ -131,25 +155,63 @@ public class CreateRedditAccount extends HttpServlet {
         log( "POST" );
         log( "POST: Connection=" + connectionCount );
 
-        RedditAccountLogic aLogic = LogicFactory.getFor("RedditAccount" );
-        String username = request.getParameter( RedditAccountLogic.NAME );
-        if( aLogic.getRedditAccountWithName(username ) == null ){
-            try {
-                RedditAccount account = aLogic.createEntity( request.getParameterMap() );
-                aLogic.add( account );
-            } catch( Exception ex ) {
+        CommentLogic aLogic = LogicFactory.getFor("Comment" );
+        PostLogic pLogic = LogicFactory.getFor("Post");
+        RedditAccountLogic rLogic = LogicFactory.getFor("RedditAccount");
+          
+               
+        String uniqueId = request.getParameter( CommentLogic.UNIQUE_ID );
+        String redditAccountId = request.getParameter( CommentLogic.REDDIT_ACCOUNT_ID );
+        String postId = request.getParameter( CommentLogic.POST_ID );
+        
+        boolean redditAccountExists = false;
+        boolean postIdExists = false;
+        
+        List<RedditAccount> redditAccounts = rLogic.getAll();
+        List<Post> posts = pLogic.getAll();
+        
+        if(!redditAccountId.equals("")){
+            for(int i=0;i<redditAccounts.size();i++){
+                
+                if(redditAccounts.get(i).getId()==Integer.valueOf(redditAccountId)){
+                    redditAccountExists = true;        
+                    i=redditAccounts.size();
+                }
+            }
+        }
+        
+        if(!postId.equals("")){
+           for(int i=0;i<posts.size();i++){
+                if(posts.get(i).getId()==Integer.valueOf(postId)){
+                    postIdExists = true;
+                    i = posts.size();
+                }
+            } 
+        }
+ 
+        if(aLogic.getCommentWithUniqueId(uniqueId)==null && redditAccountExists==true && postIdExists==true){
+            try{
+                Comment comment = aLogic.createEntity(request.getParameterMap());
+                comment.setRedditAccountId(rLogic.getWithId(Integer.valueOf(redditAccountId)));
+                comment.setPostId(pLogic.getWithId(Integer.valueOf(postId)));
+                aLogic.add(comment);
+            }catch(Exception ex){
                 errorMessage = ex.getMessage();
             }
-        } else {
-            //if duplicate print the error message
-            errorMessage = "Name: \"" + username + "\" already exists";
+        }else if(redditAccountExists==false){
+            errorMessage = "RedditAccount ID: \"" + redditAccountId + "\" does not exists";
+        }else if(postIdExists==false){
+            errorMessage = "Post ID: \"" + postId + "\" does not exists";
+        }else{
+            errorMessage = "Unique ID: \"" + uniqueId + "\" already exists";
         }
+        
         if( request.getParameter( "add" ) != null ){
             //if add button is pressed return the same page
             processRequest( request, response );
         } else if( request.getParameter( "view" ) != null ){
             //if view button is pressed redirect to the appropriate table
-            response.sendRedirect( "RedditAccountTable" );
+            response.sendRedirect( "CommentTable" );
         }
     }
 
@@ -160,7 +222,7 @@ public class CreateRedditAccount extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Create a RedditAccount Entity";
+        return "Create a Comment Entity";
     }
 
     private static final boolean DEBUG = true;
